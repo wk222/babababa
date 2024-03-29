@@ -33,7 +33,7 @@ def get_args():
     parser.add_argument('--save_ckpt_freq', default=100, type=int)
 
     # Model parameters
-    parser.add_argument('--model', default='vit_base_patch16_224', type=str, metavar='MODEL',
+    parser.add_argument('--model', default='Videomamba', type=str, metavar='MODEL',
                         help='Name of model to train')
     parser.add_argument('--tubelet_size', type=int, default=2)
     parser.add_argument('--orig_t_size', type=int, default=8)
@@ -102,7 +102,7 @@ def get_args():
     # Evaluation parameters
     parser.add_argument('--crop_pct', type=float, default=None)
     parser.add_argument('--short_side_size', type=int, default=224)
-    parser.add_argument('--test_num_segment', type=int, default=5)
+    parser.add_argument('--test_num_segment', type=int, default=4)
     parser.add_argument('--test_num_crop', type=int, default=3)
     
     # Random Erase params
@@ -130,7 +130,7 @@ def get_args():
                         help='How to apply mixup/cutmix params. Per "batch", "pair", or "elem"')
 
     # Finetuning params
-    parser.add_argument('--finetune', default='', help='finetune from checkpoint')
+    parser.add_argument('--finetune', default='https://pjlab-gvm-data.oss-cn-shanghai.aliyuncs.com/videomamba/videomamba_t16_k400_f64_res224.pth', help='finetune from checkpoint')
     parser.add_argument('--delete_head', action='store_true', help='whether delete head')
     parser.add_argument('--model_key', default='model|module', type=str)
     parser.add_argument('--model_prefix', default='', type=str)
@@ -151,15 +151,15 @@ def get_args():
                         help='dataset path')
     parser.add_argument('--eval_data_path', default=None, type=str,
                         help='dataset path for evaluation')
-    parser.add_argument('--nb_classes', default=400, type=int,
+    parser.add_argument('--nb_classes', default=7, type=int,
                         help='number of the classification types')
     parser.add_argument('--imagenet_default_mean_and_std', default=True, action='store_true')
     parser.add_argument('--use_decord', action='store_true',
                         help='whether use decord to load video, otherwise load image')
     parser.add_argument('--no_use_decord', action='store_false', dest='use_decord')
     parser.set_defaults(use_decord=True)
-    parser.add_argument('--num_segments', type=int, default=1)
-    parser.add_argument('--num_frames', type=int, default=16)
+    parser.add_argument('--num_segments', type=int, default=4)
+    parser.add_argument('--num_frames', type=int, default=64)
     parser.add_argument('--sampling_rate', type=int, default=4)
     parser.add_argument('--trimmed', type=int, default=60)
     parser.add_argument('--time_stride', type=int, default=16)
@@ -247,7 +247,7 @@ def main(args, ds_init):
 
     cudnn.benchmark = True
 
-    dataset_train, args.nb_classes = build_dataset(is_train=True, test_mode=False, args=args)
+    dataset_train, args.crop = build_dataset(is_train=True, test_mode=False, args=args)
     if args.disable_eval_during_finetuning:
         dataset_val = None
     else:
@@ -325,13 +325,13 @@ def main(args, ds_init):
         mixup_fn = Mixup(
             mixup_alpha=args.mixup, cutmix_alpha=args.cutmix, cutmix_minmax=args.cutmix_minmax,
             prob=args.mixup_prob, switch_prob=args.mixup_switch_prob, mode=args.mixup_mode,
-            label_smoothing=args.smoothing, num_classes=args.nb_classes)
+            label_smoothing=args.smoothing, num_classes=args.crop)
 
     if 'deit' in args.model:
         model = create_model(
             args.model,
             pretrained=True,
-            num_classes=args.nb_classes,
+            num_classes=args.crop,
             fc_drop_rate=args.fc_drop_rate,
             drop_path_rate=args.drop_path,
             kernel_size=args.tubelet_size,
