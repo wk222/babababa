@@ -8,6 +8,7 @@ from .masking_generator import (
 )
 from .mae import VideoMAE
 from .kinetics import VideoClsDataset
+from mydataset import AVideoClsDataset
 from .kinetics_sparse import VideoClsDataset_sparse
 from .ssv2 import SSVideoClsDataset, SSRawFrameClsDataset
 from .lvu import LVU
@@ -205,7 +206,40 @@ def build_dataset(is_train, test_mode, args):
             new_width=320,
             args=args)
         nb_classes = 101
+        
+    elif args.data_set == 'mydataset':
+        mode = None
+        anno_path = None
+        func = AVideoClsDataset
+        if is_train is True:
+            mode = 'train'
+            anno_path = os.path.join(args.data_path, 'train.csv')
+        elif test_mode is True:
+            mode = 'test'
+            anno_path = os.path.join(args.data_path, 'test.csv') 
+        else:  
+            mode = 'validation'
+            anno_path = os.path.join(args.data_path, 'val.csv') 
 
+
+        dataset = func(
+            anno_path=anno_path,
+            prefix=args.prefix,
+            split=args.split,
+            mode=mode,
+            clip_len=1,
+            num_segment=args.num_frames,
+            test_num_segment=args.test_num_segment,
+            test_num_crop=args.test_num_crop,
+            num_crop=1 if not test_mode else 3,
+            keep_aspect_ratio=True,
+            crop_size=args.input_size,
+            short_side_size=args.short_side_size,
+            new_height=256,
+            new_width=320,
+            filename_tmpl=args.filename_tmpl,
+            args=args)
+        nb_classes = 7
     elif args.data_set in [
             'LVU',
             'COIN',
