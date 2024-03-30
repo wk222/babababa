@@ -8,7 +8,7 @@ from .masking_generator import (
 )
 from .mae import VideoMAE
 from .kinetics import VideoClsDataset
-from mydataset import AVideoClsDataset
+from mydataset import AVideoClsDataset_sparse
 from .kinetics_sparse import VideoClsDataset_sparse
 from .ssv2 import SSVideoClsDataset, SSRawFrameClsDataset
 from .lvu import LVU
