@@ -26,7 +26,7 @@ try:
 except ImportError:
     has_client = False
 
-class VideoClsDataset_sparse(Dataset):
+class AVideoClsDataset_sparse(Dataset):
     """Load your own video classification dataset."""
 
     def __init__(self, anno_path, prefix='', split=' ', mode='train', clip_len=8,
