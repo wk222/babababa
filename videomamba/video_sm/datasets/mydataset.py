@@ -312,7 +312,11 @@ class AVideoClsDataset_sparse(Dataset):
             all_index = self._get_seq_frames(len(vr), self.clip_len, clip_idx=chunk_nb)
             vr.seek(0)
             buffer = vr.get_batch(all_index).asnumpy()
-            return buffer
+            for frame in buffer:
+            face_frame = self.detect_faces(frame)
+            processed_buffer.append(face_frame)
+            return np.array(processed_buffer)
+
         except:
             print("video cannot be loaded by decord: ", fname)
             return []
