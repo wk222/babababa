@@ -147,6 +147,8 @@ if not SKIP_CUDA_BUILD:
                         "-U__CUDA_NO_BFLOAT162_OPERATORS__",
                         "-U__CUDA_NO_BFLOAT162_CONVERSIONS__",
                         "--expt-relaxed-constexpr",
+                        "-gencode', 'arch=compute_75,code=sm_75",  # Turing
+                        "-gencode', 'arch=compute_70,code=sm_70",  # V
                         "--expt-extended-lambda",
                         "--use_fast_math",
                         "--ptxas-options=-v",
