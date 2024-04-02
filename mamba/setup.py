@@ -108,7 +108,7 @@ if not SKIP_CUDA_BUILD:
     cc_flag.append("-gencode")
     cc_flag.append("arch=compute_70,code=sm_70")
     cc_flag.append("-gencode")
-    cc_flag.append("arch=compute_80,code=sm_80")
+    cc_flag.append("arch=compute_75,code=sm_75")
     if bare_metal_version >= Version("11.8"):
         cc_flag.append("-gencode")
         cc_flag.append("arch=compute_90,code=sm_90")
@@ -147,8 +147,7 @@ if not SKIP_CUDA_BUILD:
                         "-U__CUDA_NO_BFLOAT162_OPERATORS__",
                         "-U__CUDA_NO_BFLOAT162_CONVERSIONS__",
                         "--expt-relaxed-constexpr",
-                        "-gencode', 'arch=compute_75,code=sm_75",  # Turing
-                        "-gencode', 'arch=compute_70,code=sm_70",  # V
+
                         "--expt-extended-lambda",
                         "--use_fast_math",
                         "--ptxas-options=-v",
